@@ -3,7 +3,6 @@ name: Build and Test
 jobs:
   publish:
       name: Publish
-      needs: test
       runs-on: ubuntu-latest
       permissions:
         contents: read
