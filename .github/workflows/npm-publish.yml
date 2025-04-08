@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org/'
+          repository-url: 'https://github.com/bitcoin-sv/bsv-mcp'
 
       - name: Install dependencies
         run: npm ci
