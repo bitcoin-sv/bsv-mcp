@@ -133,6 +133,7 @@ server.tool(
     }
 );
 
+
 // Tool 2: Code Search (Keep as is with inlined schema)
 server.tool(
     "code_search",
