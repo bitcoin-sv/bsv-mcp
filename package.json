@@ -1,6 +1,6 @@
 {
   "name": "@bsv/mcp",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Custom MCP Server for BSV development providing context and tools for development",
   "type": "module",
   "main": "build/index.js",
