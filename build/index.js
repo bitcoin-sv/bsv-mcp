@@ -54,7 +54,7 @@ async function runSearch(searchDir, query, filePattern = '*') {
     }
 }
 // --- Tool Implementations ---
-// Tool 1: BRC Lookup (Keep as is)
+// Tool 1: BRC Lookup (Modified)
 server.tool("brc_lookup", "Retrieve the content of a specific BRC (Bitcoin Request for Comment) from the local clone of bitcoin-sv/BRCs repository.", { brc_identifier: z.string().describe("...") }, // Inlined schema
 async ({ brc_identifier }) => {
     console.error(`Tool call: brc_lookup with identifier: ${brc_identifier}`);
@@ -79,13 +79,23 @@ async ({ brc_identifier }) => {
             'tokens/',
             'wallet/'
         ];
-        // Normalize BRC identifier (remove leading zeros)
+        // --- Start of new logic for BRC identifier variants ---
+        const potentialIdentifiers = new Set();
+        potentialIdentifiers.add(brc_identifier); // Add original input
+        // Add normalized version (e.g., "1" from "0001")
         const normalizedId = brc_identifier.replace(/^0+/, '');
-        // Check both the normalized and original identifier
-        const identifiersToTry = [normalizedId, brc_identifier];
+        potentialIdentifiers.add(normalizedId);
+        // Add 4-digit zero-padded version if input is numeric (e.g., "0001" from "1")
+        if (/^\d+$/.test(brc_identifier)) {
+            const num = parseInt(brc_identifier, 10);
+            // Pad to 4 digits. e.g., 1 -> "0001", 12 -> "0012"
+            const paddedId = String(num).padStart(4, '0');
+            potentialIdentifiers.add(paddedId);
+        }
+        // --- End of new logic for BRC identifier variants ---
         // Try each possible directory and identifier combination
         for (const category of categories) {
-            for (const id of identifiersToTry) {
+            for (const id of Array.from(potentialIdentifiers)) { // Iterate over the generated set
                 const fileNameGuess = `${id}.md`;
                 const filePath = path.join(brcsRepoPath, category, fileNameGuess);
                 console.error(`Looking for BRC file at: ${filePath}`);
